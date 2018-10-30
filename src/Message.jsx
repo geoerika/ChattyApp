@@ -6,18 +6,15 @@ class Message extends Component {
 
     return (
 
-      <main className="messages">
-
         <div className="message">
-          <span className="message-username">Anonymous1</span>
-          <span className="message-content">I won't be impressed with technology until I can download food.</span>
+          <span className="message-username">{this.props.messageUser}</span>
+          <span className="message-content">{this.props.messageContent}</span>
         </div>
 
-        <div className="message system">
+        /*<div className="message system">
         Anonymous1 changed their name to nomnom.
-        </div>
+        </div>*/
 
-      </main>
     );
   }
 }
