@@ -59,12 +59,15 @@ const messages = [
 class App extends Component {
 
   constructor() {
+
     super();
     // this is the *only* time you should assign directly to state:
     this.state = {
       currentUser:currentUser.name,
       messages:messages
     };
+    this.addMessage= this.addMessage.bind(this);
+
     console.log('currentUser: ', this.state.currentUser);
     console.log('messages', this.state.messages);
   }
@@ -85,7 +88,20 @@ class App extends Component {
   }
 
 
+  addMessage(message) {
 
+    const oldMessageList = this.state.messages;
+
+    const newMessage = {};
+    newMessage.id = oldMessageList.length + 1;
+    console.log("newMessage.id: ", newMessage.id);
+    // newMessage.id = generateRandomId();
+    newMessage.username = this.state.currentUser;
+    newMessage.content = message;
+
+    const newMessageList = [...oldMessageList, newMessage];
+    this.setState({ messages: newMessageList });
+  }
 
   render() {
 
@@ -96,10 +112,11 @@ class App extends Component {
         </nav>
 
         <MessageList messages={this.state.messages}/>
-        <ChatBar currentUser={this.state.currentUser}/>
+        <ChatBar currentUser={this.state.currentUser} addMessage={this.addMessage}/>
 
       </div>
     );
   }
 }
+
 export default App;
