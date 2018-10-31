@@ -10,7 +10,7 @@ class ChatBar extends Component {
       console.log('inputMessage: ', inputMessage);
 
     // we call the update function defined in app.js
-      this.props.addMessage(inputMessage);
+      this.props.sendMessage(inputMessage);
 
       evt.target.value = "";
     }
