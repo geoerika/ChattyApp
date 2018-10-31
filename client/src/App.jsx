@@ -40,20 +40,20 @@ import ChatBar from './ChatBar.jsx';
 
 // const userMessages = {
 
-const currentUser = {name: "Bob"};// optional. if currentUser is not defined, it means the user is Anonymous
-const messages = [
-    {
-      id: 1,
-      username: "Bob",
-      content: "Has anyone seen my marbles?",
-    },
-    {
-      id: 2,
-      username: "Anonymous",
-      content: "No, I think you lost them. You lost your marbles Bob. You lost them for good."
-    }
-  ];
-// }
+// const currentUser = {name: "Bob"};// optional. if currentUser is not defined, it means the user is Anonymous
+// const messages = [
+//     {
+//       id: 1,
+//       username: "Bob",
+//       content: "Has anyone seen my marbles?",
+//     },
+//     {
+//       id: 2,
+//       username: "Anonymous",
+//       content: "No, I think you lost them. You lost your marbles Bob. You lost them for good."
+//     }
+//   ];
+// // }
 
 
 class App extends Component {
@@ -63,14 +63,16 @@ class App extends Component {
     super();
     // this is the *only* time you should assign directly to state:
     this.state = {
-      currentUser:currentUser.name,
-      messages:messages
+      currentUser:{name: "Bob"},
+      messages:[] // messages coming from the server will be stored here as they arrive
     };
+
     this.addMessage = this.addMessage.bind(this);
+    this.updateUsername = this.updateUsername.bind(this);
     this.sendMessage = this.sendMessage.bind(this);
 
 
-    console.log('currentUser: ', this.state.currentUser);
+    console.log('currentUser: ', this.state.currentUser.name);
     console.log('messages', this.state.messages);
   }
 
@@ -92,16 +94,28 @@ class App extends Component {
     this.webSocket.onopen = (event) => {
       console.log('Connected to server!');
     };
+    this.webSocket.onmessage = (receivedEvent) => {
+        console.log('receivedeventData: ', receivedEvent.data);
+        // code to handle incoming message
+        this.addMessage(JSON.parse(receivedEvent.data));
+      }
+  }
+
+  updateUsername(inputUsername) {
+
+    this.setState({ currentUser: {name:inputUsername}});
   }
 
   // Send text to all users through the server
   sendMessage(inputMessage) {
 
+        console.log('this.state: ', this.state);
+
   // Construct a message object containing the data the server needs to process the message from the chat client.
     const message = {
       type: "message",
       content: inputMessage,
-      username: this.state.currentUser,
+      username: this.state.currentUser.name,
     };
 
     // Send the msg object as a JSON-formatted string.
@@ -109,20 +123,21 @@ class App extends Component {
     this.webSocket.send(JSON.stringify(message));
   }
 
+
   addMessage(message) {
 
     const oldMessageList = this.state.messages;
 
     const newMessage = {};
-    newMessage.id = oldMessageList.length + 1;
-    console.log("newMessage.id: ", newMessage.id);
-    // newMessage.id = generateRandomId();
-    newMessage.username = this.state.currentUser;
-    newMessage.content = message;
+    newMessage.id = message.id;
+    console.log('message.id:', message.id);
+    newMessage.username = message.username;
+    newMessage.content = message.content;
 
     const newMessageList = [...oldMessageList, newMessage];
     this.setState({ messages: newMessageList });
   }
+
 
   render() {
 
@@ -133,7 +148,7 @@ class App extends Component {
         </nav>
 
         <MessageList messages={this.state.messages}/>
-        <ChatBar currentUser={this.state.currentUser} sendMessage={this.sendMessage}/>
+        <ChatBar currentUser={this.state.currentUser.name} sendMessage={this.sendMessage} updateUsername={this.updateUsername}/>
 
       </div>
     );
