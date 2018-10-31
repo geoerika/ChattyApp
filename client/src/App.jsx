@@ -66,7 +66,9 @@ class App extends Component {
       currentUser:currentUser.name,
       messages:messages
     };
-    this.addMessage= this.addMessage.bind(this);
+    this.addMessage = this.addMessage.bind(this);
+    this.sendMessage = this.sendMessage.bind(this);
+
 
     console.log('currentUser: ', this.state.currentUser);
     console.log('messages', this.state.messages);
@@ -85,8 +87,27 @@ class App extends Component {
       // Calling setState will trigger a call to render() in App and all child components.
       this.setState({messages: messages});
     }, 3000);
+
+    this.webSocket = new WebSocket("ws://localhost:3001/");
+    this.webSocket.onopen = (event) => {
+      console.log('Connected to server!');
+    };
   }
 
+  // Send text to all users through the server
+  sendMessage(inputMessage) {
+
+  // Construct a message object containing the data the server needs to process the message from the chat client.
+    const message = {
+      type: "message",
+      content: inputMessage,
+      username: this.state.currentUser,
+    };
+
+    // Send the msg object as a JSON-formatted string.
+    console.log('message client:', message);
+    this.webSocket.send(JSON.stringify(message));
+  }
 
   addMessage(message) {
 
@@ -112,7 +133,7 @@ class App extends Component {
         </nav>
 
         <MessageList messages={this.state.messages}/>
-        <ChatBar currentUser={this.state.currentUser} addMessage={this.addMessage}/>
+        <ChatBar currentUser={this.state.currentUser} sendMessage={this.sendMessage}/>
 
       </div>
     );
