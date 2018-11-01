@@ -16,42 +16,72 @@ const server = express()
 // Create the WebSockets server
 const wss = new WebSocket.Server({ server });
 let messageReceived = {};
+let nrOfClients = {};
+let numberofClients = 0;
+
 
 // Set up a callback that will run when a client connects to the server
 // When a client connects they are assigned a socket, represented by
 // the ws parameter in the callback.
 wss.on('connection', (ws) => {
+   numberofClients = wss.clients.size;
+   nrOfClients = {numberOfClients:numberofClients};
+   console.log('nrOfClients at connect: ', nrOfClients);
+  if (nrOfClients) {
+
+    wss.clients.forEach(function each(client) {
+      if (client.readyState === WebSocket.OPEN) {
+        // console.log('messageReceived: ', messageReceived);
+        client.send(JSON.stringify(nrOfClients));
+      }
+    });
+  }
+
   console.log('Client connected');
   ws.on('message', function incoming(message) {
 
     messageReceived = JSON.parse(message);
-    console.log('message type when received: ', messageReceived.type);
+    // console.log('message type when received: ', messageReceived.type);
     messageReceived.id = uuidv1();
 
     if (messageReceived.type === 'postMessage') {
       messageReceived.type = 'incomingMessage';
-      console.log('message type on server message: ', messageReceived.type);
-      console.log('User ' + messageReceived.username + ' said ' + messageReceived.content);
+      // console.log('message type on server message: ', messageReceived.type);
+      // console.log('User ' + messageReceived.username + ' said ' + messageReceived.content);
     } else {
       if (messageReceived.type === 'postNotification') {
         messageReceived.type = 'incomingNotification';
         // console.log('message type: ', messageReceived.type);
-        console.log('Notification: ', messageReceived.content);
+        // console.log('Notification: ', messageReceived.content);
       }
     };
 
     wss.clients.forEach(function each(client) {
       if (client.readyState === WebSocket.OPEN) {
-        console.log('messageReceived: ', messageReceived);
+        // console.log('messageReceived: ', messageReceived);
         client.send(JSON.stringify(messageReceived));
       }
     });
   });
 
 
-
   // Set up a callback for when a client closes the socket. This usually means they closed their browser.
-  ws.on('close', () => console.log('Client disconnected'));
+  ws.on('close', () => {
+    console.log('Client disconnected');
+    numberofClients = wss.clients.size;
+    console.log
+   nrOfClients = {numberOfClients:numberofClients};
+   console.log('nrOfClients at connect: ', nrOfClients);
+  if (nrOfClients) {
+
+    wss.clients.forEach(function each(client) {
+      if (client.readyState === WebSocket.OPEN) {
+        // console.log('messageReceived: ', messageReceived);
+        client.send(JSON.stringify(nrOfClients));
+      }
+    });
+  }
+  });
 });
 
 
