@@ -23,12 +23,26 @@ let messageReceived = {};
 wss.on('connection', (ws) => {
   console.log('Client connected');
   ws.on('message', function incoming(message) {
+
     messageReceived = JSON.parse(message);
+    console.log('message type when received: ', messageReceived.type);
     messageReceived.id = uuidv1();
-    console.log('message id: ', messageReceived.id);
-    console.log('User ' + messageReceived.username + ' said ' + messageReceived.content);
+
+    if (messageReceived.type === 'postMessage') {
+      messageReceived.type = 'incomingMessage';
+      console.log('message type on server message: ', messageReceived.type);
+      console.log('User ' + messageReceived.username + ' said ' + messageReceived.content);
+    } else {
+      if (messageReceived.type === 'postNotification') {
+        messageReceived.type = 'incomingNotification';
+        // console.log('message type: ', messageReceived.type);
+        console.log('Notification: ', messageReceived.content);
+      }
+    };
+
     wss.clients.forEach(function each(client) {
       if (client.readyState === WebSocket.OPEN) {
+        console.log('messageReceived: ', messageReceived);
         client.send(JSON.stringify(messageReceived));
       }
     });
