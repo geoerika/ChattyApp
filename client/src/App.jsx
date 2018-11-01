@@ -64,7 +64,8 @@ class App extends Component {
     // this is the *only* time you should assign directly to state:
     this.state = {
       currentUser:{name: "Bob"},
-      messages:[] // messages coming from the server will be stored here as they arrive
+      messages:[], // messages coming from the server will be stored here as they arrive
+      userNumbertoDisplay:''
     };
 
     this.addMessage = this.addMessage.bind(this);
@@ -101,24 +102,43 @@ class App extends Component {
       // This line turns it into an object
       const data = JSON.parse(event.data);
       console.log('data: ', data);
-      console.log('dataType in App from server: ', data.type);
+      // console.log('dataType in App from server: ', data.type);
+      let userNumber = data.numberOfClients;
+      console.log('userNumber:', userNumber);
 
-      switch(data.type) {
+      if (userNumber) {
 
-        case 'incomingMessage':
-        // code to handle incoming message
-          this.addMessage(data);
+        if (userNumber === 1) {
 
-          // handle incoming message
-          break;
-        case 'incomingNotification':
-          this.addMessage(data);
-          // handle incoming notification
-          break;
-        default:
-          // show an error in the console if the message type is unknown
-          throw new Error("Unknown event type " + data.type);
+          this.setState({userNumbertoDisplay:userNumber + ' user online'});
+          console.log('userNumbertoDisplay: ', this.state.userNumbertoDisplay);
+
+        } else {
+
+         this.setState({userNumbertoDisplay:userNumber + ' users online'});
+          console.log('userNumbertoDisplay: ', this.state.userNumbertoDisplay);
+
         }
+
+      } else {
+
+        switch(data.type) {
+
+          case 'incomingMessage':
+          // code to handle incoming message
+            this.addMessage(data);
+
+            // handle incoming message
+            break;
+          case 'incomingNotification':
+            this.addMessage(data);
+            // handle incoming notification
+            break;
+          default:
+            // show an error in the console if the message type is unknown
+            throw new Error("Unknown event type " + data.type);
+          }
+      }
     }
 
     // this.webSocket.onmessage = (receivedEvent) => {
@@ -192,6 +212,7 @@ class App extends Component {
       <div>
         <nav className="navbar">
           <a href="/" className="navbar-brand">Chatty</a>
+          <span className="navbar-users">{this.state.userNumbertoDisplay}</span>
         </nav>
 
         <MessageList messages={this.state.messages}/>
