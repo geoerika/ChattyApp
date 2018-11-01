@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 
 class ChatBar extends Component {
 
+
   //the arrow function gets this.props
   pressedEnterMessage = (evt)=> {
 
@@ -23,7 +24,7 @@ class ChatBar extends Component {
       console.log('inputUsername: ', inputUsername);
 
     // we call the update function defined in app.js
-      this.props.updateUsername(inputUsername);
+      this.props.updateUsername(this.props.currentUser, inputUsername);
 
       evt.target.value = "";
     }

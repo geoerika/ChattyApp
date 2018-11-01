@@ -83,7 +83,7 @@ class App extends Component {
     setTimeout(() => {
       console.log("Simulating incoming message");
      // Add a new message to the list of messages in the data store
-      const newMessage = {id: 3, username: "Michelle", content: "Hello there!"};
+      const newMessage = {id: 3, username: "Michelle", content: "Hello there!", type:"incomingMessage"};
       const messages = this.state.messages.concat(newMessage);
       // Update the state of the app component.
       // Calling setState will trigger a call to render() in App and all child components.
@@ -94,26 +94,66 @@ class App extends Component {
     this.webSocket.onopen = (event) => {
       console.log('Connected to server!');
     };
-    this.webSocket.onmessage = (receivedEvent) => {
-        console.log('receivedeventData: ', receivedEvent.data);
+
+    this.webSocket.onmessage = (event) => {
+      console.log(event);
+      // The socket event data is encoded as a JSON string.
+      // This line turns it into an object
+      const data = JSON.parse(event.data);
+      console.log('data: ', data);
+      console.log('dataType in App from server: ', data.type);
+
+      switch(data.type) {
+
+        case 'incomingMessage':
         // code to handle incoming message
-        this.addMessage(JSON.parse(receivedEvent.data));
-      }
+          this.addMessage(data);
+
+          // handle incoming message
+          break;
+        case 'incomingNotification':
+          this.addMessage(data);
+          // handle incoming notification
+          break;
+        default:
+          // show an error in the console if the message type is unknown
+          throw new Error("Unknown event type " + data.type);
+        }
+    }
+
+    // this.webSocket.onmessage = (receivedEvent) => {
+    //     console.log('receivedeventData: ', receivedEvent.data);
+    //     // code to handle incoming message
+    //     this.addMessage(JSON.parse(receivedEvent.data));
+    //   }
   }
 
-  updateUsername(inputUsername) {
+  updateUsername(previousUsername, inputUsername) {
+
+    console.log('this.state: ', this.state);
+
+  // Construct a message object containing the data the server needs to process the message from the chat client.
+    const message = {
+      type: "postNotification",
+      content: '**' + previousUsername + '**' + ' changed their name to ' + '**' + inputUsername + '**',
+      username: this.state.currentUser.name,
+    };
 
     this.setState({ currentUser: {name:inputUsername}});
+
+    // Send the msg object as a JSON-formatted string.
+    console.log('message client:', message);
+    this.webSocket.send(JSON.stringify(message));
   }
 
   // Send text to all users through the server
   sendMessage(inputMessage) {
 
-        console.log('this.state: ', this.state);
+        // console.log('this.state: ', this.state);
 
   // Construct a message object containing the data the server needs to process the message from the chat client.
     const message = {
-      type: "message",
+      type: "postMessage",
       content: inputMessage,
       username: this.state.currentUser.name,
     };
@@ -126,13 +166,20 @@ class App extends Component {
 
   addMessage(message) {
 
+    console.log('message arriving at addMessage: ', message);
+
     const oldMessageList = this.state.messages;
 
     const newMessage = {};
-    newMessage.id = message.id;
-    console.log('message.id:', message.id);
-    newMessage.username = message.username;
-    newMessage.content = message.content;
+
+    if (message.type === 'incomingMessage' || message.type === 'incomingNotification') {
+
+      newMessage.id = message.id;
+      // console.log('message.id:', message.id);
+      newMessage.username = message.username;
+      newMessage.content = message.content;
+      newMessage.type = message.type;
+    }
 
     const newMessageList = [...oldMessageList, newMessage];
     this.setState({ messages: newMessageList });
