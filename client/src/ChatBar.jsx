@@ -3,6 +3,8 @@ import React, {Component} from 'react';
 class ChatBar extends Component {
 
 
+
+
   //the arrow function gets this.props
   pressedEnterMessage = (evt)=> {
 
@@ -30,12 +32,15 @@ class ChatBar extends Component {
     }
   };
 
+
   render() {
+
+    console.log('this.props.clientColour in Chatbar: ', this.props.clientColour);
 
     return (
       <footer className="chatbar">
-        <input className="chatbar-username" onKeyPress={this.pressedEnterUsername} name="inputUsername" placeholder={this.props.currentUser}/>
-        <input className="chatbar-message" onKeyPress={this.pressedEnterMessage} name="inputMessage" placeholder="Type a message and hit ENTER" />
+        <input className="chatbar-username" style={{color: this.props.clientColour}} onKeyPress={this.pressedEnterUsername} name="inputUsername" placeholder={this.props.currentUser}/>
+        <input className="chatbar-message" onKeyPress={this.pressedEnterMessage} name="inputMessage" placeholder="Type a message and hit ENTER"/>
       </footer>
     );
   }
