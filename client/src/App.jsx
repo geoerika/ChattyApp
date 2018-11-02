@@ -2,59 +2,6 @@ import React, {Component} from 'react';
 import MessageList from './MessageList.jsx';
 import ChatBar from './ChatBar.jsx';
 
-/*messages = [
-  {
-    type: "incomingMessage",
-    content: "I won't be impressed with technology until I can download food.",
-    username: "Anonymous1"
-  },
-  {
-    type: "incomingNotification",
-    content: "Anonymous1 changed their name to nomnom",
-  },
-  {
-    type: "incomingMessage",
-    content: "I wouldn't want to download Kraft Dinner. I'd be scared of cheese packet loss.",
-    username: "Anonymous2"
-  },
-  {
-    type: "incomingMessage",
-    content: "...",
-    username: "nomnom"
-  },
-  {
-    type: "incomingMessage",
-    content: "I'd love to download a fried egg, but I'm afraid encryption would scramble it",
-    username: "Anonymous2"
-  },
-  {
-    type: "incomingMessage",
-    content: "This isn't funny. You're not funny",
-    username: "nomnom"
-  },
-  {
-    type: "incomingNotification",
-    content: "Anonymous2 changed their name to NotFunny",
-  },
-]; */
-
-// const userMessages = {
-
-// const currentUser = {name: "Bob"};// optional. if currentUser is not defined, it means the user is Anonymous
-// const messages = [
-//     {
-//       id: 1,
-//       username: "Bob",
-//       content: "Has anyone seen my marbles?",
-//     },
-//     {
-//       id: 2,
-//       username: "Anonymous",
-//       content: "No, I think you lost them. You lost your marbles Bob. You lost them for good."
-//     }
-//   ];
-// // }
-
 
 class App extends Component {
 
@@ -65,7 +12,10 @@ class App extends Component {
     this.state = {
       currentUser:{name: "Bob"},
       messages:[], // messages coming from the server will be stored here as they arrive
-      userNumbertoDisplay:''
+      userNumbertoDisplay:'',
+      clientColour:'black',
+      userColour:'black'
+
     };
 
     this.addMessage = this.addMessage.bind(this);
@@ -97,26 +47,26 @@ class App extends Component {
     };
 
     this.webSocket.onmessage = (event) => {
-      console.log(event);
+      // console.log(event);
       // The socket event data is encoded as a JSON string.
       // This line turns it into an object
       const data = JSON.parse(event.data);
-      console.log('data: ', data);
+      console.log('data when arrived in app: ', data);
       // console.log('dataType in App from server: ', data.type);
       let userNumber = data.numberOfClients;
-      console.log('userNumber:', userNumber);
+      // console.log('userNumber:', userNumber);
 
       if (userNumber) {
 
         if (userNumber === 1) {
 
           this.setState({userNumbertoDisplay:userNumber + ' user online'});
-          console.log('userNumbertoDisplay: ', this.state.userNumbertoDisplay);
+          // console.log('userNumbertoDisplay: ', this.state.userNumbertoDisplay);
 
         } else {
 
          this.setState({userNumbertoDisplay:userNumber + ' users online'});
-          console.log('userNumbertoDisplay: ', this.state.userNumbertoDisplay);
+          // console.log('userNumbertoDisplay: ', this.state.userNumbertoDisplay);
 
         }
 
@@ -125,15 +75,24 @@ class App extends Component {
         switch(data.type) {
 
           case 'incomingMessage':
+            console.log('userColor in App case when received: ', data.clientColour);
+            this.setState({userColour: data.clientColour});
           // code to handle incoming message
-            this.addMessage(data);
+            this.addMessage(data, this.state.userColour);
 
             // handle incoming message
             break;
           case 'incomingNotification':
-            this.addMessage(data);
+            this.setState({userColour: data.clientColour});
+            this.addMessage(data, this.state.userColour);
             // handle incoming notification
             break;
+
+          case 'colour':
+            this.setState({clientColour: data.colour});
+            console.log('this.state.clientColour: ', this.state.clientColour);
+            break;
+
           default:
             // show an error in the console if the message type is unknown
             throw new Error("Unknown event type " + data.type);
@@ -150,13 +109,17 @@ class App extends Component {
 
   updateUsername(previousUsername, inputUsername) {
 
-    console.log('this.state: ', this.state);
+    console.log('this.state in update: ', this.state);
 
   // Construct a message object containing the data the server needs to process the message from the chat client.
     const message = {
       type: "postNotification",
       content: '**' + previousUsername + '**' + ' changed their name to ' + '**' + inputUsername + '**',
       username: this.state.currentUser.name,
+      clientColour:this.state.clientColour
+      // userColour: this.state.clientColour
+
+      // clientColour: this.state.clientColour,
     };
 
     this.setState({ currentUser: {name:inputUsername}});
@@ -176,6 +139,7 @@ class App extends Component {
       type: "postMessage",
       content: inputMessage,
       username: this.state.currentUser.name,
+      clientColour: this.state.clientColour,
     };
 
     // Send the msg object as a JSON-formatted string.
@@ -184,7 +148,7 @@ class App extends Component {
   }
 
 
-  addMessage(message) {
+  addMessage(message, userColour) {
 
     console.log('message arriving at addMessage: ', message);
 
@@ -199,6 +163,8 @@ class App extends Component {
       newMessage.username = message.username;
       newMessage.content = message.content;
       newMessage.type = message.type;
+      newMessage.clientColour = userColour;
+      // newMessage.userColour = userColour
     }
 
     const newMessageList = [...oldMessageList, newMessage];
@@ -216,7 +182,7 @@ class App extends Component {
         </nav>
 
         <MessageList messages={this.state.messages}/>
-        <ChatBar currentUser={this.state.currentUser.name} sendMessage={this.sendMessage} updateUsername={this.updateUsername}/>
+        <ChatBar currentUser={this.state.currentUser.name} clientColour={this.state.clientColour} sendMessage={this.sendMessage} updateUsername={this.updateUsername}/>
 
       </div>
     );
