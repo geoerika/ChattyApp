@@ -18,15 +18,26 @@ const wss = new WebSocket.Server({ server });
 let messageReceived = {};
 let nrOfClients = {};
 let numberofClients = 0;
+// let colourArray = ['#00cc00', '#cc0052', '#0000cc', '#8600b3'];
+
+let colourArray = ['red', 'blue', 'green', 'purple'];
 
 
 // Set up a callback that will run when a client connects to the server
 // When a client connects they are assigned a socket, represented by
 // the ws parameter in the callback.
 wss.on('connection', (ws) => {
-   numberofClients = wss.clients.size;
-   nrOfClients = {numberOfClients:numberofClients};
-   console.log('nrOfClients at connect: ', nrOfClients);
+
+  numberofClients = wss.clients.size;
+  nrOfClients = {numberOfClients:numberofClients};
+  let colourClient = colourArray[Math.floor(Math.random()*colourArray.length)];
+  console.log('colourClient: ', colourClient);
+  clientColour = {type:'colour', colour: colourClient};
+  console.log('clientColour: ', clientColour);
+  console.log('nrOfClients at connect: ', nrOfClients);
+
+  ws.send(JSON.stringify(clientColour));
+
   if (nrOfClients) {
 
     wss.clients.forEach(function each(client) {
@@ -41,6 +52,7 @@ wss.on('connection', (ws) => {
   ws.on('message', function incoming(message) {
 
     messageReceived = JSON.parse(message);
+    console.log('message when received: ', messageReceived);
     // console.log('message type when received: ', messageReceived.type);
     messageReceived.id = uuidv1();
 
@@ -69,9 +81,8 @@ wss.on('connection', (ws) => {
   ws.on('close', () => {
     console.log('Client disconnected');
     numberofClients = wss.clients.size;
-    console.log
    nrOfClients = {numberOfClients:numberofClients};
-   console.log('nrOfClients at connect: ', nrOfClients);
+   // console.log('nrOfClients at connect: ', nrOfClients);
   if (nrOfClients) {
 
     wss.clients.forEach(function each(client) {
