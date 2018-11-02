@@ -9,12 +9,13 @@ class Message extends Component {
     console.log('this.props in Message: ', this.props);
     let messageType = this.props.messageType;
     console.log('messageType in Message: ', messageType);
+    console.log('this.props.clientColour in Chatbar: ', this.props.clientColour);
     let messageItem ='';
 
     if(messageType === 'incomingMessage') {
       messageItem = (
           <div className="message">
-            <span className="message-username">{this.props.messageUser}</span>
+            <span className="message-username" style={{color: this.props.clientColour}}>{this.props.messageUser}</span>
             <span className="message-content">{this.props.messageContent}</span>
           </div>
       )
@@ -23,8 +24,8 @@ class Message extends Component {
     if (messageType === 'incomingNotification') {
 
       messageItem = (
-            <div class="notification">
-              <span class="notification-content">{this.props.messageContent}</span>
+            <div className="notification">
+              <span className="notification-content">{this.props.messageContent}</span>
             </div>
         )
     }
