@@ -1,5 +1,6 @@
 body {
-      background: white;
+     /* background-image: url("../images/chattyBackground.jpeg") */
+      background-color: white;
       color: black;
       font-family: 'Open Sans', sans-serif;
       font-size: 14px;
@@ -33,6 +34,7 @@ body {
 
     .chatbar-username {
       flex: 2;
+      font-weight: 700;
     }
 
     .message {
