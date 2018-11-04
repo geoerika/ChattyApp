@@ -82,15 +82,21 @@ class App extends Component {
 
             // handle incoming message
             break;
+
           case 'incomingNotification':
             this.setState({userColour: data.clientColour});
             this.addMessage(data, this.state.userColour);
             // handle incoming notification
             break;
 
+          case 'image':
+            this.setState({userColour: data.clientColour});
+            this.addMessage(data, this.state.userColour);
+            // handle incoming image
+            break;
+
           case 'colour':
             this.setState({clientColour: data.colour});
-            console.log('this.state.clientColour: ', this.state.clientColour);
             break;
 
           default:
@@ -156,7 +162,7 @@ class App extends Component {
 
     const newMessage = {};
 
-    if (message.type === 'incomingMessage' || message.type === 'incomingNotification') {
+    if (message.type === 'incomingMessage' || message.type === 'incomingNotification' || 'image') {
 
       newMessage.id = message.id;
       // console.log('message.id:', message.id);
