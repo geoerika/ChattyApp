@@ -1,45 +1,41 @@
-React Boilerplate
+Chatty App
 =====================
 
-A minimal and light dev environment for ReactJS.
+A minimal and light dev environment for ReactJS based on a boilerplate project
 
-### Usage
-
-Clone the boilerplate and create your own git repo.
-
-```
-git clone git@github.com:lighthouse-labs/react-simple-boilerplate.git
-cd react-simple-boilerplate
-git remote rm origin
-git remote add origin [YOUR NEW REPOSITORY]
-# Manually update your package.json file
-```
-
-Install the dependencies and start the server.
-
-```
-npm install
-npm start
-open http://localhost:3000
-```
-
-### Static Files
-
-You can store static files like images, fonts, etc in the `build` folder.
-
-For example, if you copy a file called my_image.png into the build folder you can access it using `http://localhost:3000/build/my_image.png`.
-
-### Linting
-
-This boilerplate project includes React ESLint configuration.
-
-```
-npm run lint
-```
 
 ### Dependencies
 
+Client
+* Babel
+* CSS-loader
+* Node
+* Node-sass
 * React
+* ReactDOM
+* Sass-loader
+* Socksjs-client
+* Style-loader
 * Webpack
 * [babel-loader](https://github.com/babel/babel-loader)
 * [webpack-dev-server](https://github.com/webpack/webpack-dev-server)
+
+Chatty_Server
+* Express
+* Uuid
+* WS
+
+###Getting Started
+
+    Install all dependencies for both client and server. Start the server and connect a client with npm start for both client and server. The page application can be accesed in the browser at http://localhost:3000.
+
+    ```
+    npm install
+    npm start
+    open http://localhost:3000
+    ```
+### Usage
+
+    Upon connection, a user will be assigned a colour. There can be multiple users connected from different browser windows, chatting with each other. They can type messages and change names.
+
+    Work in progress: a user can copy in the message box an url image (jpeg, png, gif) from the image folder on the client side. The image will be sent and displayed to all other connected users. At this point, a user cannot send a message and an image at the same time.
