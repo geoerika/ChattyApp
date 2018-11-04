@@ -1,33 +1,29 @@
 import React, {Component} from 'react';
 
+//component for displaying and receiving new username and receiving a new message content
 class ChatBar extends Component {
-
-
-
 
   //the arrow function gets this.props
   pressedEnterMessage = (evt)=> {
 
+    //on Enter in the message field we store the message in inputMessage
     if (evt.key === 'Enter') {
       const inputMessage = evt.target.value;
-      console.log('inputMessage: ', inputMessage);
-
-    // we call the update function defined in app.js
+      // we send the message content to the sendMessage function defined in App.js
       this.props.sendMessage(inputMessage);
-
       evt.target.value = "";
     }
   };
 
+
   pressedEnterUsername = (evt)=> {
 
+    //on Enter we read the new user name and send it to update the currentUser name in the main App
     if (evt.key === 'Enter') {
+
       const inputUsername = evt.target.value;
-      console.log('inputUsername: ', inputUsername);
-
-    // we call the update function defined in app.js
+      // we pass on the new username value to the update function defined in app.js
       this.props.updateUsername(this.props.currentUser, inputUsername);
-
       evt.target.value = "";
     }
   };
@@ -35,17 +31,16 @@ class ChatBar extends Component {
 
   render() {
 
-    console.log('this.props.clientColour in Chatbar: ', this.props.clientColour);
-
     return (
+      //display of chatbar components, username and input message
       <footer className="chatbar">
-        <input className="chatbar-username" style={{color: this.props.clientColour}} onKeyPress={this.pressedEnterUsername} name="inputUsername" placeholder={this.props.currentUser}/>
-        <input className="chatbar-message" onKeyPress={this.pressedEnterMessage} name="inputMessage" placeholder="Type a message and hit ENTER"/>
+        <input className="chatbar-username" name="inputUsername" style={{color: this.props.clientColour}}
+                onKeyPress={this.pressedEnterUsername} placeholder={this.props.currentUser}/>
+        <input className="chatbar-message" name="inputMessage" onKeyPress={this.pressedEnterMessage}
+                placeholder="Type a message and hit ENTER"/>
       </footer>
     );
   }
 }
-
-
 
 export default ChatBar;
