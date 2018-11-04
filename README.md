@@ -3,8 +3,11 @@ Chatty App
 
 A minimal and light dev environment for ReactJS based on a boilerplate project
 
+## Final Product
 
-### Dependencies
+!["Screenshot of ChattyApp main page"](https://raw.githubusercontent.com/geoerika/ChattyApp/master/client/Docs/ChattyApp_main_page.png)
+
+## Dependencies
 
 Client
 * Babel
@@ -25,16 +28,15 @@ Chatty_Server
 * Uuid
 * WS
 
-###Getting Started
+## Getting Started
 
-    Install all dependencies for both client and server. Start the server and connect a client with npm start for both client and server. The page application can be accesed in the browser at http://localhost:3000.
-
-    ```
-    npm install
-    npm start
-    open http://localhost:3000
-    ```
-### Usage
+    Install all dependencies for both client and server. Start the server and connect a client with `npm start` for both client and server. The page application can be accesed in the browser at `http://localhost:3000`.
+    
+    `npm install`
+    `npm start`
+    `open http://localhost:300`
+    
+## Usage
 
     Upon connection, a user will be assigned a colour. There can be multiple users connected from different browser windows, chatting with each other. They can type messages and change names.
 
