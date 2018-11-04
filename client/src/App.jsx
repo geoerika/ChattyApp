@@ -11,7 +11,7 @@ class App extends Component {
     // setting up the state
     this.state = {
 
-      currentUser:{name: "Bob"},
+      currentUser:{name: 'Bob'},
       messages:[], // messages coming from the server will be stored here as they arrive
       userNumbertoDisplay:'',
       clientColour:'black', // the user name will have clientColour colour
@@ -33,7 +33,7 @@ class App extends Component {
 
       // simulating an incoming message;
       // add a new message to the list of messages in the data store
-      const newMessage = {id: 3, username: "Michelle", content: "Hello there!", type:"incomingMessage"};
+      const newMessage = {id: 3, username: 'Michelle', content: 'Hello there!', type:'incomingMessage'};
       const messages = this.state.messages.concat(newMessage);
       // update the state of the app component
       // calling setState will trigger a call to render() in App and all child components
@@ -41,10 +41,10 @@ class App extends Component {
     }, 3000);
 
     // create a new WebSocket connection.
-    this.webSocket = new WebSocket("ws://localhost:3001/");
+    this.webSocket = new WebSocket('ws://localhost:3001/');
 
     // on open connections print a confirmation message in the console; used for testing
-    this.webSocket.onopen = (event) => {
+    this.webSocket.onopen = () => {
       console.log('Connected to server!');
     };
 
@@ -102,7 +102,7 @@ class App extends Component {
 
           default:
             // show an error in the console if the message type is unknown
-            throw new Error("Unknown event type " + data.type);
+            throw new Error('Unknown event type ' + data.type);
         }
       }
     }
@@ -115,7 +115,7 @@ class App extends Component {
     // to process the information sent by the chat client
     const message = {
 
-      type: "postNotification",
+      type: 'postNotification',
       content: '*' + previousUsername + '*' + ' changed their name to ' + '*' + inputUsername + '*',
       username: this.state.currentUser.name,
       clientColour:this.state.clientColour
@@ -136,7 +136,7 @@ class App extends Component {
   // the server needs in order to process the message received from the chat client
     const message = {
 
-      type: "postMessage",
+      type: 'postMessage',
       content: inputMessage,
       username: this.state.currentUser.name,
       clientColour: this.state.clientColour,

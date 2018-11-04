@@ -1,3 +1,4 @@
+'use strict'
 import React, {Component} from 'react';
 
 //component for displaying and receiving new username and receiving a new message content
