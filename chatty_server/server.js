@@ -31,68 +31,90 @@ wss.on('connection', (ws) => {
   numberofClients = wss.clients.size;
   nrOfClients = {numberOfClients:numberofClients};
   let colourClient = colourArray[Math.floor(Math.random()*colourArray.length)];
-  console.log('colourClient: ', colourClient);
+  // console.log('colourClient: ', colourClient);
   clientColour = {type:'colour', colour: colourClient};
   console.log('clientColour: ', clientColour);
-  console.log('nrOfClients at connect: ', nrOfClients);
+  // console.log('nrOfClients at connect: ', nrOfClients);
 
   ws.send(JSON.stringify(clientColour));
 
   if (nrOfClients) {
 
-    wss.clients.forEach(function each(client) {
-      if (client.readyState === WebSocket.OPEN) {
-        // console.log('messageReceived: ', messageReceived);
-        client.send(JSON.stringify(nrOfClients));
-      }
-    });
+    broadcastMessage(nrOfClients);
   }
 
   console.log('Client connected');
-  ws.on('message', function incoming(message) {
-
-    messageReceived = JSON.parse(message);
-    console.log('message when received: ', messageReceived);
-    // console.log('message type when received: ', messageReceived.type);
-    messageReceived.id = uuidv1();
-
-    if (messageReceived.type === 'postMessage') {
-      messageReceived.type = 'incomingMessage';
-      // console.log('message type on server message: ', messageReceived.type);
-      // console.log('User ' + messageReceived.username + ' said ' + messageReceived.content);
-    } else {
-      if (messageReceived.type === 'postNotification') {
-        messageReceived.type = 'incomingNotification';
-        // console.log('message type: ', messageReceived.type);
-        // console.log('Notification: ', messageReceived.content);
-      }
-    };
-
-    wss.clients.forEach(function each(client) {
-      if (client.readyState === WebSocket.OPEN) {
-        // console.log('messageReceived: ', messageReceived);
-        client.send(JSON.stringify(messageReceived));
-      }
-    });
-  });
+  ws.on('message', handleReceivedMessage);
 
 
   // Set up a callback for when a client closes the socket. This usually means they closed their browser.
   ws.on('close', () => {
+
     console.log('Client disconnected');
     numberofClients = wss.clients.size;
-   nrOfClients = {numberOfClients:numberofClients};
+    nrOfClients = {numberOfClients:numberofClients};
    // console.log('nrOfClients at connect: ', nrOfClients);
-  if (nrOfClients) {
+    if (nrOfClients) {
 
-    wss.clients.forEach(function each(client) {
-      if (client.readyState === WebSocket.OPEN) {
-        // console.log('messageReceived: ', messageReceived);
-        client.send(JSON.stringify(nrOfClients));
-      }
-    });
-  }
+      broadcastMessage(nrOfClients);
+    }
   });
 });
+
+const handleReceivedMessage = (message) => {
+
+  messageReceived = JSON.parse(message);
+  console.log('message when received: ', messageReceived);
+  // console.log('message type when received: ', messageReceived.type);
+  messageReceived.id = uuidv1();
+
+
+  if (messageReceived.type === 'postMessage') {
+
+    messageReceived.type = 'incomingMessage';
+    // let matches = messageReceived.content.match(/^(\/images\/.+\.jpeg|png|gif$)/);
+    let regex = new RegExp(/(\/images\/(.+)(\.jpeg|png|gif))/g);
+    let matches = messageReceived.content.match(regex);
+
+    // let matches = messageReceived.content.match(/(\/images\/(.+).jpeg|png|gif)/g);
+    console.log('matches: ', matches);
+
+    if (matches) {
+
+    messageReceived.content = matches[0];
+    console.log('messageReceived.content image: ', messageReceived.content);
+    messageReceived.type = 'image';
+
+    }
+
+    // console.log('message type on server message: ', messageReceived.type);
+     // console.log('User ' + messageReceived.username + ' said ' + messageReceived.content);
+  } else {
+
+    if (messageReceived.type === 'postNotification') {
+        messageReceived.type = 'incomingNotification';
+        // console.log('message type: ', messageReceived.type);
+        // console.log('Notification: ', messageReceived.content);
+    }
+  };
+
+  console.log('message to send :', messageReceived);
+
+  broadcastMessage(messageReceived);
+}
+
+const broadcastMessage = (message) => {
+
+  wss.clients.forEach(function each(client) {
+
+    if (client.readyState === WebSocket.OPEN) {
+      // console.log('messageReceived: ', messageReceived);
+      client.send(JSON.stringify(message));
+    }
+  });
+}
+
+
+
 
 
