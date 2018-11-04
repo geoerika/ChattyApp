@@ -31,7 +31,7 @@ class Message extends Component {
       )
     }
 
-    //case for incoming image
+    //case for incoming message
     if (messageType === 'image') {
 
       messageItem = (
@@ -46,6 +46,7 @@ class Message extends Component {
     }
 
     return (
+      // display the message
       <div>
         {messageItem}
       </div>

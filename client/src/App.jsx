@@ -14,15 +14,15 @@ class App extends Component {
       currentUser:{name: "Bob"},
       messages:[], // messages coming from the server will be stored here as they arrive
       userNumbertoDisplay:'',
-      clientColour:'black', //the user name will have clientColour colour
-      userColour:'black'  //this is the colour of a message sender
+      clientColour:'black', // the user name will have clientColour colour
+      userColour:'black'  // this is the colour of a message sender
     };
 
-    //method to add new messages arriving from server to the list of messages
+    // method to add new messages arriving from server to the list of messages
     this.addMessage = this.addMessage.bind(this);
-    //method to update the current user name in currentUser;
+    // method to update the current user name in currentUser;
     this.updateUsername = this.updateUsername.bind(this);
-    //method to send a message to the server
+    // method to send a message to the server
     this.sendMessage = this.sendMessage.bind(this);
   }
 

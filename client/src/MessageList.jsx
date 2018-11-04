@@ -1,12 +1,11 @@
 import React, {Component} from 'react';
 import Message from './Message.jsx';
 
-//component which receives the list of messages and maps them to Message component for displaying
-class MessageList extends Component {
+// functional component which receives the list of messages and maps them to Message component for displaying
+function MessageList ({messages}) {
 
-  render() {
     //mapping messages in the database to send them to the Message component with apropriate props
-    const messageList = this.props.messages.map(message => (
+    const messageList = messages.map(message => (
 
       <Message key={message.id} clientColour={message.clientColour} messageUser={message.username}
                messageContent={message.content} messageType={message.type}/>
@@ -18,7 +17,6 @@ class MessageList extends Component {
         {messageList}
       </main>
     );
-  }
 }
 
 export default MessageList;
