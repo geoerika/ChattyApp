@@ -34,7 +34,7 @@ Chatty_Server
     
     `npm install`
     `npm start`
-    `open http://localhost:300`
+    `open http://localhost:3000`
     
 ## Usage
 
