@@ -1,7 +1,7 @@
 Chatty App
 =====================
 
-A minimal and light dev environment for ReactJS based on a boilerplate project. ChattyApp is a multi-user chat application.
+ChattyApp is a multi-user chat application developped with React.js and Websockets.
 
 ## Final Product
 
